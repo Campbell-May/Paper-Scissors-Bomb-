@@ -1,3 +1,10 @@
+const readline = require('readline')
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+})
+
 const getUserChoice = (userInput) => {
   userInput = userInput.toLowerCase()
   if (
@@ -13,7 +20,7 @@ const getUserChoice = (userInput) => {
 }
 
 function getComputerChoice() {
-  randomNumber = Math.floor(Math.random() * 3)
+  const randomNumber = Math.floor(Math.random() * 3)
   switch (randomNumber) {
     case 0:
       return 'rock'
@@ -54,11 +61,32 @@ function determineWinner(userChoice, computerChoice) {
 }
 
 function playGame() {
-  const userChoice = getUserChoice('paper')
-  const computerChoice = getComputerChoice()
-  console.log('You threw: ' + userChoice)
-  console.log('The computer threw:' + computerChoice)
-  console.log(determineWinner(userChoice, computerChoice))
+  rl.question(
+    'Enter your choice (rock, paper, or scissors): ',
+    (userChoice) => {
+      const computerChoice = getComputerChoice()
+      console.log('Loading...')
+
+      // Simulate a loading bar animation
+      let loadingBar = '[          ]'
+      const interval = setInterval(() => {
+        loadingBar = `[${loadingBar.slice(1)} ]`
+        process.stdout.clearLine()
+        process.stdout.cursorTo(0)
+        process.stdout.write(loadingBar)
+
+        if (loadingBar === '[          ]') {
+          clearInterval(interval)
+          process.stdout.clearLine()
+          process.stdout.cursorTo(0)
+          console.log('You threw: ' + userChoice)
+          console.log('The computer threw: ' + computerChoice)
+          console.log(determineWinner(userChoice, computerChoice))
+          rl.close()
+        }
+      }, 2)
+    }
+  )
 }
 
 playGame()
